@@ -3,6 +3,7 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from apps.users.serializers import UserSerializer
 
@@ -24,12 +25,21 @@ class RegisterUserView(GenericAPIView):
         # Create user
         user = User.objects.create(
             **validated_data,
-            is_superuser=True,
-            is_staff=True,
+            username=validated_data["email"],
+            is_superuser=False,
+            is_staff=False,
         )
 
         # Set password
         user.set_password(password)
         user.save()
 
-        return Response(self.serializer_class(user).data)
+        refresh = RefreshToken.for_user(user)
+        access_token = str(refresh.access_token)
+
+        return Response(
+            {
+                "access_token": access_token,
+                "refresh_token": str(refresh),
+            }
+        )
