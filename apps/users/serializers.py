@@ -13,3 +13,13 @@ class UserSerializer(serializers.ModelSerializer):
             "email",
             "password",
         )
+
+
+class UserListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = (
+            "pk",
+            "first_name",
+            "last_name",
+        )

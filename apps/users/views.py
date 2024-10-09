@@ -1,11 +1,11 @@
 from django.contrib.auth.models import User
-from rest_framework.generics import GenericAPIView
+from rest_framework.generics import GenericAPIView, ListAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from apps.users.serializers import UserSerializer
+from apps.users.serializers import UserListSerializer, UserSerializer
 
 
 class RegisterUserView(GenericAPIView):
@@ -43,3 +43,10 @@ class RegisterUserView(GenericAPIView):
                 "refresh_token": str(refresh),
             }
         )
+
+
+class ListUsersView(ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserListSerializer
+    permission_classes = (AllowAny,)
+    authentication_classes = ()
